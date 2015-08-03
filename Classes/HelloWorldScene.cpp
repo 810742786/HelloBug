@@ -32,6 +32,7 @@ bool HelloWorld::init()
 	addChild(map);
 	Soldier* soldier = Soldier::create();
 	addSoldier(map,soldier);
+	//上面那些是测试的
     return true;
 }
 

@@ -90,8 +90,12 @@ bool Soldier::init(){
 	listener->onTouchBegan = CC_CALLBACK_2(Soldier::onTouchBegan, this);
 	listener->onTouchEnded = CC_CALLBACK_2(Soldier::onTouchEnded, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-	//给人物加个普通攻击
+	//给人物加个普通攻击的技能
 	skill[0] = 0;
+	//添加移动消息的监听
+	GameManager::getInstance()->addMoveObsever(StringUtils::format("%d", id), [&](Vec2 vec){
+		StartMoveAction(vec);
+	});
 	return true;
 }
 //这个方法是对soldier绑定一个精灵

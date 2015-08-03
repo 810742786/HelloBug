@@ -30,3 +30,13 @@ void GameManager::postNotification(const std::string &sMsgName, Ref* data){
 		}
 	}
 }
+void GameManager:: addMoveObsever(const std::string &sMsgName, std::function<void(Vec2)>func){
+	if (move_map.find(sMsgName) != move_map.end()){
+		move_map[sMsgName] = func;
+	}	
+}
+void GameManager::postMoveNotification(const std::string &sMsgName,Vec2 data){
+	if (move_map.find(sMsgName) != move_map.end()){
+		move_map.at(sMsgName)(data);
+	}
+}

@@ -14,6 +14,12 @@ public :
 	void postNotification(const std::string &sMsgName, Ref* data);
 	static GameManager* m_GameManager;
 	std::map<std::string, std::vector<std::function<void(Ref*)>>> m_funcMap;//通过map记录了订阅消息的全部对象
+	//这里是专门用来负责移动的
+	void addMoveObsever(const std::string &sMsgName, std::function<void(Vec2)>func);
+	void postMoveNotification(const std::string &sMsgName, Vec2 data);
+	std::map<std::string,std::function<void(Vec2)>> move_map;//一个key只对应了一个动作，不需要再添加vector浪费了
+
+
 };
 #endif
 /*通过二维int数组模拟地图*/

@@ -1,6 +1,4 @@
 #include "Soldier.h"
-
-
 Soldier::Soldier()
 {
 }
@@ -17,7 +15,6 @@ bool Soldier::init(){
 	*/
 	SpriteFrameCache* frameCache = SpriteFrameCache::getInstance();
 	frameCache->addSpriteFramesWithFile("./Soldier/" + kind + ".plist", "./Soldier/" + kind + ".png");
-	log("init frameCache Success");
 	//从这里创建9个运动的集合，第九个是站立的用Map集合类比较容易查询    这里的Vector跟Map是cocos自带的
 	//因为StandMap要在其他的方法中调用，所以我定义成全局的了
 	Vector<SpriteFrame*>frameVec_Up;
@@ -48,7 +45,7 @@ bool Soldier::init(){
 	standMap.insert("left", frameCache->getSpriteFrameByName("left9.png"));
 	standMap.insert("dr", frameCache->getSpriteFrameByName("dr9.png"));
 	standMap.insert("dl", frameCache->getSpriteFrameByName("dl9.png"));
-	//初始化各种动作	
+	//初始化各种动作
 	CCAnimation *animationUp = CCAnimation::createWithSpriteFrames(frameVec_Up);
 	CCAnimation *animationDown = CCAnimation::createWithSpriteFrames(frameVec_Down);
 	CCAnimation *animationRight = CCAnimation::createWithSpriteFrames(frameVec_Right);
@@ -93,10 +90,13 @@ bool Soldier::init(){
 	//给人物加个普通攻击的技能
 	skill[0] = 0;
 	//添加移动消息的监听
+	log("%d",id);
 	GameManager::getInstance()->addMoveObsever(StringUtils::format("%d", id), [&](Vec2 vec){
+		log("start move action");	
 		StartMoveAction(vec);
 	});
 	return true;
+	
 }
 //这个方法是对soldier绑定一个精灵
 void Soldier:: bindSprite(Sprite *sprite){
@@ -109,9 +109,10 @@ void Soldier:: bindSprite(Sprite *sprite){
 //移动过程，是一个点一个点（一步一步）的移动，保证同步
 void Soldier::StartMoveAction(Vec2 vec){
 	//设置移动开始动画.
+	
 	string d;
-	float d_X = vec.x - m_sprite->getPosition().x;
-	float d_Y = vec.y - m_sprite->getPosition().y;
+	float d_X = vec.x - this->getPosition().x;
+	float d_Y = vec.y - this->getPosition().y;
 	if (d_X > 0 && d_Y > 0){
 		d = "ur";
 	}
@@ -158,7 +159,7 @@ void Soldier::StartMoveAction(Vec2 vec){
 	
 		
 	isMoving = true;
-	m_sprite->setPosition(vec);
+	this->setPosition(vec);
 }
 //设置移动结束动画
 void Soldier::endMoveAction(){
@@ -171,11 +172,15 @@ void Soldier::endMoveAction(){
 bool Soldier::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event){
 	return true;
 }
-void Soldier::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event){
+void Soldier::onTouchEnded(cocos2d::Touch	* touch, cocos2d::Event* event){
 	CCPoint touchPoint = convertTouchToNodeSpace(touch);
 	if (m_sprite->boundingBox().containsPoint(touchPoint)){		
-		HelloWorld::beChoosedSoldier = this;
+//		beChoosedID = this->id;
 		log("Soldier is be clicked");
 	}
-	
+	//下面完全是测试
+	GameManager::getInstance()->postMoveNotification("0",touch->getLocation());
+}
+void Soldier::attack(int id){
+
 }

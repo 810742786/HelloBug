@@ -17,6 +17,7 @@ public:
 	void bindSprite(Sprite *sprite);//给soldier绑定一个精灵
 	bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
 	void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
+	void update(float dt);
 	void attack(int id);
 protected:
 	bool isMoving = false;
@@ -34,8 +35,22 @@ protected:
 	int owner;//所属,0代表中立
 	int soldierSpeed=5;//速度，速度值越大人物行走的越慢——。我暂时想到了这个方法
 	int compareSpeed=0;//与speed比较相同就前进。	
+	int physical=10;//体力值
+	int physical_Max=10;//体力值上限
+	int sunhao=10;//损耗的速率
+	int SunhaoStep=0;//
 	CCAnimationCache *animCache;//人物8个方向的动作缓存
 	
 	Map<string, SpriteFrame*>standMap;//储存了人物站立的8个方向
+
+	MoveTo *moveToAction;
+	CCAnimation *animationUp;
+	CCAnimation *animationDown;
+	CCAnimation *animationRight;
+	CCAnimation *animationLeft;
+	CCAnimation *animationUR;
+	CCAnimation *animationUL;
+	CCAnimation *animationDR;
+	CCAnimation *animationDL;
 };
 #endif

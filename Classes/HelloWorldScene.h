@@ -14,6 +14,12 @@ public:
 	void addSoldier(TMXTiledMap* map, Soldier *soldier);
     void menuCloseCallback(cocos2d::Ref* pSender);
     CREATE_FUNC(HelloWorld);
+
+
+
+	bool onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event);
+	void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event);
+	void onMouseScroll(cocos2d::Event* event);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

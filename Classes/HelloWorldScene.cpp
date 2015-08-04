@@ -28,9 +28,19 @@ bool HelloWorld::init()
     }
 	//下面用于测试并没什么用
 	TMXTiledMap* map = TMXTiledMap::create("map.tmx");
-	addChild(map);
+	addChild(map);	
 	Soldier* soldier = Soldier::create();
 	addSoldier(map,soldier);
+	//
+	
+	auto listeners = EventListenerMouse::create();
+	listeners->onMouseScroll = CC_CALLBACK_1(HelloWorld::onMouseScroll, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listeners, this);
+	//
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->onTouchBegan = CC_CALLBACK_2(HelloWorld::onTouchBegan, this);
+	listener->onTouchEnded = CC_CALLBACK_2(HelloWorld::onTouchEnded, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 	//上面那些是测试的
     return true;
 }
@@ -50,4 +60,20 @@ void HelloWorld:: addSoldier(TMXTiledMap* map,Soldier *msoldier){//将士兵添加到m
 	msoldier->bindSprite(soldierSprite);
 	msoldier->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
 	map->addChild(msoldier);	
+}
+void HelloWorld::onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* event){
+	
+	
+	
+	log("%f,%f", touch->getLocation().x, touch->getLocation().y);
+
+}
+bool HelloWorld::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event){
+	
+	
+	return true;
+
+}
+void HelloWorld::onMouseScroll(cocos2d::Event* event){
+	
 }

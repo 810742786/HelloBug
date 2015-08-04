@@ -1,4 +1,5 @@
 #include "Soldier.h"
+#include "Math.h"
 Soldier::Soldier()
 {
 }
@@ -46,31 +47,23 @@ bool Soldier::init(){
 	standMap.insert("dr", frameCache->getSpriteFrameByName("dr9.png"));
 	standMap.insert("dl", frameCache->getSpriteFrameByName("dl9.png"));
 	//初始化各种动作
-	CCAnimation *animationUp = CCAnimation::createWithSpriteFrames(frameVec_Up);
-	CCAnimation *animationDown = CCAnimation::createWithSpriteFrames(frameVec_Down);
-	CCAnimation *animationRight = CCAnimation::createWithSpriteFrames(frameVec_Right);
-	CCAnimation *animationLeft = CCAnimation::createWithSpriteFrames(frameVec_Left);
-	CCAnimation *animationUR = CCAnimation::createWithSpriteFrames(frameVec_UR);
-	CCAnimation *animationUL = CCAnimation::createWithSpriteFrames(frameVec_UL);
-	CCAnimation *animationDR = CCAnimation::createWithSpriteFrames(frameVec_DR);
-	CCAnimation *animationDL = CCAnimation::createWithSpriteFrames(frameVec_DL);
+	animationUp = CCAnimation::createWithSpriteFrames(frameVec_Up);
+	animationDown = CCAnimation::createWithSpriteFrames(frameVec_Down);
+	animationRight = CCAnimation::createWithSpriteFrames(frameVec_Right);
+	animationLeft = CCAnimation::createWithSpriteFrames(frameVec_Left);
+	animationUR = CCAnimation::createWithSpriteFrames(frameVec_UR);
+	animationUL = CCAnimation::createWithSpriteFrames(frameVec_UL);
+	animationDR = CCAnimation::createWithSpriteFrames(frameVec_DR);
+	animationDL = CCAnimation::createWithSpriteFrames(frameVec_DL);
 	//这里设置一些参数，setLoops将动画设置为循环播放，setDelayPerUnit设置每帧的间隔为0.2秒
 	animationUp->setLoops(-1);
-	animationUp->setDelayPerUnit(0.2f);
 	animationDown->setLoops(-1);
-	animationDown->setDelayPerUnit(0.2f);
 	animationRight->setLoops(-1);
-	animationRight->setDelayPerUnit(0.2f);
 	animationLeft->setLoops(-1);
-	animationLeft->setDelayPerUnit(0.2f);
 	animationUR->setLoops(-1);
-	animationUR->setDelayPerUnit(0.2f);
 	animationUL->setLoops(-1);
-	animationUL->setDelayPerUnit(0.2f);
 	animationDR->setLoops(-1);
-	animationDR->setDelayPerUnit(0.2f);
 	animationDL->setLoops(-1);
-	animationDL->setDelayPerUnit(0.2f);
 	//将动画加到动画缓存中
 	CCAnimationCache::sharedAnimationCache()->addAnimation(animationUp,"up");
 	CCAnimationCache::sharedAnimationCache()->addAnimation(animationDown, "down");
@@ -108,6 +101,16 @@ void Soldier:: bindSprite(Sprite *sprite){
 
 //移动过程，是一个点一个点（一步一步）的移动，保证同步
 void Soldier::StartMoveAction(Vec2 vec){
+	//设置动画播放的速度
+	float d_time = physical / 10 * 0.2f;
+	animationUp->setDelayPerUnit(d_time);
+	animationDown->setDelayPerUnit(d_time);
+	animationRight->setDelayPerUnit(d_time);
+	animationLeft->setDelayPerUnit(d_time);
+	animationUR->setDelayPerUnit(d_time);
+	animationUL->setDelayPerUnit(d_time);
+	animationDR->setDelayPerUnit(d_time);
+	animationDL->setDelayPerUnit(d_time);
 	//设置移动开始动画.
 	
 	string d;
@@ -159,11 +162,30 @@ void Soldier::StartMoveAction(Vec2 vec){
 	
 		
 	isMoving = true;
-	this->setPosition(vec);
+	//this->setPosition(vec);
+	//这两行也是测试的
+	/*
+	float time = (float)((hypot(vec.x - this->getPositionX(), vec.y - this->getPositionY()) / 7)*d_time);
+	moveToAction = MoveTo::create(time, vec);
+	this->runAction(moveToAction);
+	
+	if (this->getPositionX()>vec.x){
+		if ((this->getPositionX() - vec.x) < 1){
+			
+		}
+	}
+
+
+
+
+
+	this->scheduleUpdate();
+	*/
 }
 //设置移动结束动画
 void Soldier::endMoveAction(){
 	m_sprite->stopAllActions();
+	this->unscheduleUpdate();
 	isMoving = false;
 	//停下后要设置停下后的站位
 	m_sprite->setSpriteFrame(standMap.at(direction));
@@ -173,6 +195,7 @@ bool Soldier::onTouchBegan(cocos2d::Touch* touch, cocos2d::Event* event){
 	return true;
 }
 void Soldier::onTouchEnded(cocos2d::Touch	* touch, cocos2d::Event* event){
+	/*
 	CCPoint touchPoint = convertTouchToNodeSpace(touch);
 	if (m_sprite->boundingBox().containsPoint(touchPoint)){		
 //		beChoosedID = this->id;
@@ -180,7 +203,19 @@ void Soldier::onTouchEnded(cocos2d::Touch	* touch, cocos2d::Event* event){
 	}
 	//下面完全是测试
 	GameManager::getInstance()->postMoveNotification("0",touch->getLocation());
+	*/
 }
 void Soldier::attack(int id){
 
+}
+void Soldier:: update(float dt){
+	if (++SunhaoStep >= sunhao){
+		SunhaoStep = 0;
+		physical--;
+		if (physical == 0){
+			endMoveAction();
+		}
+		
+	}
+	log("%d", SunhaoStep);
 }
